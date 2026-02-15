@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('isAccountVerified')->default(false);
+            $table->boolean("isOauth")->default(false);
+            $table->string("oauthType")->nullable();
+            $table->foreignId('role_id')->nullable()->constrained()->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });

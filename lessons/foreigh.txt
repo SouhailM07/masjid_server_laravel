@@ -1,0 +1,47 @@
+Who has the foreign key?
+
+👉 users
+
+So:
+
+User → belongsTo Role
+
+Role → hasMany Users
+
+Because:
+
+The table WITHOUT the foreign key uses hasMany
+--
+🎯 One-line memory
+
+Foreign key owner = belongsTo
+Other side = hasMany / hasOne
+/*=============================================================================================*/
+/* comment */
+/*=============================================================================================*/
+🧠 Step 1 — Think in real life (not code)
+
+Ask:
+
+👉 “Who depends on who?”
+
+Does:
+
+❓ Role depend on User
+or
+❓ User depend on Role
+
+In real life:
+
+Role can exist alone (Admin, Editor, User)
+
+User needs a role to define permissions
+
+So:
+
+✅ Role is independent
+✅ User depends on Role
+
+🔑 Core rule
+
+The table that stores the foreign key belongsTo the other table.

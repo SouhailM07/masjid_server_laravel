@@ -31,6 +31,13 @@ class User extends Authenticatable
     public function role(){
         return $this->belongsTo(Role::class);
     }
+
+    public function centers(){
+        return $this->belongsToMany(Center::class,"memberships")
+                    ->withPivot('membership_role_id')
+                    ->as("membership")
+                    ->using(Membership::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

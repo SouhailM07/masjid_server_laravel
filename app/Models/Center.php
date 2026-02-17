@@ -19,4 +19,20 @@ class Center extends Model
     public function socials(){
         return $this->hasMany(Social::class);
     }
+
+    public function users(){
+        return $this->belongsToMany(User::class,"memberships")
+                    ->withPivot("membership_role_id")
+                    ->as('membership')
+                    ->using(Membership::class);
+    }
+
+    public function owner(){
+        $ownerRoleId = MembershipRole::where("name",'owner')->value('id');
+        return $this->belongsToMany(User::class,'memberships')
+                    ->withPivot('membership_role_id',$ownerRoleId)
+                    ->as("membership")
+                    ->using(Membership::class);
+    }
+
 }

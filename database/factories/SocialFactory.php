@@ -1,0 +1,27 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Social>
+ */
+class SocialFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        $tmp=[
+            'center_id' => $this->faker->numberBetween(1, 10), 
+            // 'center_id' => fake()->numberBetween(1, 10),
+            'type' => fake()->randomElement(['facebook','instagram','whatsapp']),
+            'value' => fake()->name(),
+        ];
+        return $tmp;
+    }
+}

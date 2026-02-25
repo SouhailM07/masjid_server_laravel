@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -16,3 +17,5 @@ Route::get('/hi',function(){
 Route::resource('/users',UserController::class);
 
 Route::post('/register',[AuthController::class,'register']);
+
+Route::resource('/actions',ActionController::class)->names('actions');

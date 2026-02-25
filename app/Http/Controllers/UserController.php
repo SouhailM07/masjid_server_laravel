@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class RoleController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,8 +13,8 @@ class RoleController extends Controller
     public function index()
     {
         //
-        $roles= Role::all();
-        return response()->json(["data"=>$roles],200);
+        $users=User::with(['role','centers'])->get();
+        return response()->json(["data"=>$users],200);
     }
 
     /**
@@ -36,7 +36,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show(string $id)
     {
         //
     }
@@ -44,7 +44,7 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    public function edit(string $id)
     {
         //
     }
@@ -52,7 +52,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Role $role)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -60,7 +60,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
+    public function destroy(string $id)
     {
         //
     }

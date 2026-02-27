@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     //
-    protected $fillable = ["name"];
+    protected $fillable = ["name",'isPublic','description'];
 
     // ! relations
     public function users(){

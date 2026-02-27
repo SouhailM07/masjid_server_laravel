@@ -44,6 +44,7 @@ class ActionController extends Controller
             return response()->json(["message"=>"Action not found"],404);
         }
         $action->update($data);
+        
         return response()->json(["message"=>"Action updated successfully",'data'=>$action],200);
     }
     public function destroy($id){

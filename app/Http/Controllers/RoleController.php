@@ -19,7 +19,7 @@ class RoleController extends Controller
     public function index()
     {
         //
-        $roles= Role::all();
+        $roles= Role::with('actions')->get();
         return response()->json(["data"=>$roles],200);
     }
 

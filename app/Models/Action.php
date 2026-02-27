@@ -13,8 +13,8 @@ class Action extends Model
     protected $fillable = ['name','description'];
 
     public function roles(){
-        return $this->belongsToMany(Role::class,'role_action')
-                    ->withPivot(['create','read','update','delete'])
-                    ->withTimestamps();
+        return $this->belongsToMany(Role::class,'role_action');
     }
+
+    
 }

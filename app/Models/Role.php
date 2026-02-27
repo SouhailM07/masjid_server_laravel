@@ -15,4 +15,10 @@ class Role extends Model
     public function users(){
         return $this->hasMany(User::class);
     }
+
+    public function actions(){
+        return $this->belongsToMany(Action::class,'role_action')
+                    ->withPivot(['create','read','update','delete'])
+                    ->withTimestamps();
+    }
 }

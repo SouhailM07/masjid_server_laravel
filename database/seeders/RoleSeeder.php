@@ -17,7 +17,8 @@ class RoleSeeder extends Seeder
         $roles=["user","admin","superadmin"];
 
         foreach($roles as $role){
-            Role::updateOrCreate(["name"=>$role]);
+            Role::updateOrCreate(["name"=>$role,"isPublic"=>false]);
         }
+        // 
     }
 }

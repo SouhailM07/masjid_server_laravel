@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Api\RoleApiResponse;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    protected RoleApiResponse $apiResponses;
+        public function __construct()
+    {
+        $this->apiResponses=new RoleApiResponse();
+    }
     /**
      * Display a listing of the resource.
      */
@@ -30,7 +36,7 @@ class RoleController extends Controller
 
         $newRole=Role::create($data);
 
-        return response()->json(['message'=>"New Role was created",'data'=>$newRole]);
+        return response()->json(...$this->apiResponses->createResponse(['data'=>$newRole]));
     }
 
     /**
@@ -40,11 +46,11 @@ class RoleController extends Controller
     {
         //
         if(!$id){
-            return response()->json(['message'=>"Role Id is required"],400);
+            return response()->json([],400);
         }
         $role=Role::find($id);
         if(!$role){
-            return response()->json(['message'=>"Role was not found"],404);
+            return response()->json(...$this->apiResponses->notFoundResponse());
         }
 
         return response()->json(['data'=>$role]);
@@ -62,10 +68,10 @@ class RoleController extends Controller
         ]);
         $updateRole=Role::find($id);
         if(!$updateRole){
-            return response()->json(["message"=>"Role was not found"],404);
+            return response()->json(...$this->apiResponses->notFoundResponse());
         }
         $updateRole->update($data);
-        return response()->json(["message"=>"Role Was Updated","data"=>$updateRole],200);
+        return response()->json(...$this->apiResponses->updateResponse(["data"=>$updateRole]));
     }
 
     /**
@@ -74,9 +80,11 @@ class RoleController extends Controller
 public function destroy($id)
 {
     $role = Role::find($id);
-    if(!$role) response()->json(["message"=>"Role not found"],404);
+    if(!$role){
+        return response()->json(...$this->apiResponses->notFoundResponse());
+    } 
     $role->delete();
 
-    return response()->json(['message' => 'Role was deleted'], 200);
+    return response()->json(...$this->apiResponses->deleteResponse());
 }
 }

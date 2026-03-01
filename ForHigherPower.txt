@@ -1,0 +1,2 @@
+- you must decide whether if to test the role controller 
+api response in and without debug or just normal mode (no debug)

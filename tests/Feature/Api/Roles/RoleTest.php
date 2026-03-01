@@ -1,6 +1,9 @@
 <?php
 
+// ! api for result testing
+
 use App\Helpers\Api\RoleApiResponse;
+use App\Models\Action;
 use App\Models\Role;
 
 use function Pest\Laravel\assertDatabaseCount;
@@ -84,6 +87,37 @@ describe("Role Api Validation Testing",function(){
 
         $response->assertUnprocessable()
             ->assertJsonValidationErrors(["name","isPublic"]);
+    });
+});
+/*
+|--------------------------------------------------------------------------
+| Piviot and Relationships Tests
+|--------------------------------------------------------------------------
+*/
+describe("Role Api Piviot and Relationships Tests",function(){
+    it("creates a role with actions",function(){
+        $action1=Action::factory()->create();
+        // $action2=Action::factory()->create();
+        $actions=[['id'=>$action1->id,'create'=>true]];
+        $response=postJson("/api/roles",['name'=>"shadow warrior","isPublic"=>false,'actions'=>$actions]);
+        $response->assertCreated()->assertJsonStructure(['message']);
+    });
+    it('update the actions of role',function(){
+        $action=Action::factory()->create();
+        $roleId=test()->role->id;
+        $updateResponse=putJson("/api/roles/$roleId",["actions"=>[$action]]);
+        $updateResponse->assertOk();
+        assertDatabaseCount('role_action',1);
+    });
+    it('delete a role_action after deleting role',function(){
+        $action=Action::factory()->create();
+        $roleId=test()->role->id;
+        $updateResponse=putJson("/api/roles/$roleId",["actions"=>[$action]]);
+        $updateResponse->assertOk();
+        assertDatabaseCount('role_action',1);
+        $deleteResponse=deleteJson("/api/roles/$roleId");
+        $deleteResponse->assertOk();
+        assertDatabaseCount("role_action",0);
     });
 });
 /*

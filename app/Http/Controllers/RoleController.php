@@ -31,12 +31,37 @@ class RoleController extends Controller
         $data=$request->validate([
             'name'=>"required|string|unique:roles",
             'isPublic'=>"boolean",
-            'description'=>"string"
+            'description'=>"nullable|string",
+            // 
+            "actions"=>["nullable",'array'],
+            "actions.*.id"=>["required",'integer','exists:actions,id'],
+            'actions.*.create' => ['nullable', 'boolean'],
+            'actions.*.read' => ['nullable', 'boolean'],
+            'actions.*.update' => ['nullable', 'boolean'],
+            'actions.*.delete' => ['nullable', 'boolean'],
         ]);
 
-        $newRole=Role::create($data);
+        $newRole=Role::create([
+            'name'=>$data['name'],
+            'isPublic'=>$data['isPublic'],
+            "description"=>$data['description']??null,
+        ]);
 
-        return response()->json(...$this->apiResponses->createResponse(['data'=>$newRole]));
+        if(!empty($data['actions'])){
+            $attachData= collect($data['actions'])->mapWithKeys(fn($action)=> [
+                $action['id']=>[
+                'create' => $action['create'] ?? false,
+                'read'   => $action['read'] ?? false,
+                'update' => $action['update'] ?? false,
+                'delete' => $action['delete'] ?? false,
+            ]])->toArray();
+            $newRole->actions()->sync($attachData);
+        }
+        $dataRes=[];
+        if(config('app.debug')){
+            $dataRes=['res'=>["data"=>$newRole->load('actions')]];
+        }
+        return response()->json(...$this->apiResponses->createResponse($dataRes));
     }
 
     /**
@@ -48,7 +73,7 @@ class RoleController extends Controller
         if(!$id){
             return response()->json([],400);
         }
-        $role=Role::find($id);
+        $role=Role::with('actions')->find($id);
         if(!$role){
             return response()->json(...$this->apiResponses->notFoundResponse());
         }
@@ -62,16 +87,46 @@ class RoleController extends Controller
     public function update(Request $request, $id)
     {
         $data=$request->validate([
-            'name'=>"required|string",
-            "isPublic"=>"required|boolean",
-            "description"=>"string"
+            'name'=>"string",
+            "isPublic"=>"boolean",
+            "description"=>"string",
+            // 
+            "actions"=>['nullable','array'],
+            "actions.*.id"=>['required','exists:actions,id'],
+            "actions.*.create"=>['nullable',"boolean"],
+            "actions.*.read"=>['nullable',"boolean"],
+            "actions.*.update"=>['nullable',"boolean"],
+            "actions.*.delete"=>['nullable','boolean']
         ]);
         $updateRole=Role::find($id);
         if(!$updateRole){
             return response()->json(...$this->apiResponses->notFoundResponse());
         }
-        $updateRole->update($data);
-        return response()->json(...$this->apiResponses->updateResponse(["data"=>$updateRole]));
+        /** @disregard */
+        $updateRole->update([
+            'name' => $data['name'] ?? $updateRole->name,
+            'isPublic' => $data['isPublic'] ?? $updateRole->isPublic,
+            'description' => $data['description'] ?? $updateRole->description,
+        ]);
+
+        if(!empty($data['actions'])){
+            $attachData = collect($data['actions'])->mapWithKeys(fn($action)=>[
+                $action['id']=>[
+                    'create'=>$action['create']??false,
+                    'read'=>$action['read']??false,
+                    'update'=>$action['update']??false,
+                    'delete'=>$action['delete']??false,
+                ]
+            ]);
+            /** @disregard */
+            $updateRole->actions()->sync($attachData);
+        }
+        $dataRes=[];
+        if(config('app.debug')){
+            /** @disregard */
+            $dataRes=['res'=>["data"=>$updateRole->load('actions')]];
+        }
+        return response()->json(...$this->apiResponses->updateResponse($dataRes));
     }
 
     /**
@@ -83,6 +138,7 @@ public function destroy($id)
     if(!$role){
         return response()->json(...$this->apiResponses->notFoundResponse());
     } 
+    /** @disregard */
     $role->delete();
 
     return response()->json(...$this->apiResponses->deleteResponse());

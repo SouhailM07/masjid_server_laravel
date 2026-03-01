@@ -12,7 +12,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/hi',function(){
-    return response()->json(["message"=>"welcome to the absolute shadow"],201);
+    $mode='debug mode is OFF';
+    if(config('app.debug')) $mode='debug mode is ON';
+    return response()->json(["message"=>"welcome to the absolute shadow , $mode"],200);
 });
 
 Route::resource('/users',UserController::class);

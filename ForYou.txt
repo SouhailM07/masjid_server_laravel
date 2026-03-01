@@ -1,11 +1,6 @@
-[-] previously
-- you were able to create and test roles with they basic fields
-- you created a united api response way to use in both controllers and tests
-- you tested the role_action attachment with tinker
+*- test user to have it's attributes and it's default role
 
-*- you must add new validation when it comes to create and update 
-*- change the delete scenario in case needed
-*- draw the json map to know your way in both [front] and [back]
+
 *- see how to deal with new role test , if split , or grouped , to test the piviot role_action
    scenarios
 

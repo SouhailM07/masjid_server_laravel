@@ -4,3 +4,4 @@
 *- see how to deal with new role test , if split , or grouped , to test the piviot role_action
    scenarios
 
+*- in tests checks for empty fields

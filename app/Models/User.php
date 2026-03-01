@@ -28,8 +28,8 @@ class User extends Authenticatable
         "oauthType",
     ];
 
-    public function role(){
-        return $this->belongsTo(Role::class);
+    public function roles(){
+        return $this->belongsToMany(Role::class,"user_role");
     }
 
     public function centers(){

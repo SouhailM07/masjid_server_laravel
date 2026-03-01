@@ -13,7 +13,7 @@ class Role extends Model
 
     // ! relations
     public function users(){
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class,"user_role");
     }
 
     public function actions(){

@@ -1,3 +1,16 @@
 GET http://127.0.0.1:8000/api/roles
 ###
 DELETE http://127.0.0.1:8000/api/roles/9999
+###
+POST http://127.0.0.1:8000/api/register
+Content-Type: application/json
+
+{
+    "name":"shadow",
+    "password":"12345678",
+    "password_confirmation":"12345678",
+    "email":"light@gmail.com"
+}
+
+###
+GET http://127.0.0.1:8000/api/users

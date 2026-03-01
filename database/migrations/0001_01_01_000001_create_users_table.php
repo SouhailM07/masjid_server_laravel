@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('password');
             $table->boolean("isOauth")->default(false);
             $table->string("oauthType")->nullable();
-            $table->foreignId('role_id')->nullable()->constrained()->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Api\RoleApiResponse;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class RoleController extends Controller
 {
@@ -109,7 +110,7 @@ class RoleController extends Controller
             'description' => $data['description'] ?? $updateRole->description,
         ]);
 
-        if(!empty($data['actions'])){
+        if(count(Arr::get($data, 'roles', [])) > 0){
             $attachData = collect($data['actions'])->mapWithKeys(fn($action)=>[
                 $action['id']=>[
                     'create'=>$action['create']??false,

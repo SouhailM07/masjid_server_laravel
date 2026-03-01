@@ -11,6 +11,7 @@ class AuthController extends Controller
 {
 
     public function logout(Request $req){
+        /** @disregard*/
         $req->user()->currentAccessToken()->delete();
         return response()->json(["message"=>"Logged out successfully"]);
     }
@@ -37,16 +38,18 @@ class AuthController extends Controller
                                 "email"=>"required|email|unique:users,email",
                                 "password"=>"required|string|min:8",
                                 "password_confirmation"=>"required|same:password"]);
-        $userRole=Role::where("name","user")->first()->id;
-        $userData["role_id"]=$userRole;
+        $userRoleId=Role::where("name","user")->first()->id;
         $newUser=User::create($userData);
-
+        $newUser->roles()->attach($userRoleId);
         $token = $newUser->createToken("auth_token")->plainTextToken;
-
+        $debugData=[];
+        if(config("app.debug")){
+            $debugData=["data"=>["user"=>$newUser]];
+        }
         return response()->json([
             "message"=>"Registered successfully",
-            "user"=>$newUser,
-            "token"=>$token
+            "token"=>$token,
+            ...$debugData
         ],201);
     }
 }

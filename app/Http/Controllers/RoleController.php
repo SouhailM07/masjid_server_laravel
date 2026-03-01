@@ -110,7 +110,7 @@ class RoleController extends Controller
             'description' => $data['description'] ?? $updateRole->description,
         ]);
 
-        if(count(Arr::get($data, 'roles', [])) > 0){
+        if(count(Arr::get($data, 'actions', [])) > 0){
             $attachData = collect($data['actions'])->mapWithKeys(fn($action)=>[
                 $action['id']=>[
                     'create'=>$action['create']??false,

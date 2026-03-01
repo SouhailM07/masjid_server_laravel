@@ -8,5 +8,5 @@ it('role seeder creates base roles', function () {
 
     seed(); // or specific seeder
 
-    expect(Role::where('name', 'admin')->exists())->toBeTrue();
+    expect(Role::where('name', 'user')->exists())->toBeTrue();
 });

@@ -1,5 +1,5 @@
 *- test user to have it's attributes and it's default role
-
+*- test register and user api test 
 
 *- see how to deal with new role test , if split , or grouped , to test the piviot role_action
    scenarios

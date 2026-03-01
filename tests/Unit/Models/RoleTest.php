@@ -5,6 +5,7 @@
 
 use App\Models\Role;
 use App\Models\Action;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 
 use function Pest\Laravel\assertDatabaseCount;
@@ -58,5 +59,20 @@ describe('Role Model Relationships', function () {
         assertDatabaseCount('role_action',1);
         $role->delete();
         assertDatabaseCount('role_action',0);
+    });
+
+    it("deleted user_role after deleting role",function(){
+        assertDatabaseCount("user_role",0);
+        assertDatabaseCount("users",0);
+        assertDatabaseCount("roles",1);
+        $user=User::factory()->create();
+        assertDatabaseCount("users",1);
+        $role=test()->role;
+        $user->roles()->attach($role->id);
+        assertDatabaseCount("user_role",1);
+        $role->delete();
+        assertDatabaseCount("roles",0);
+        assertDatabaseCount("users",1);
+        assertDatabaseCount("user_role",0);
     });
 });

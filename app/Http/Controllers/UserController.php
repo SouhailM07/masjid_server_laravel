@@ -29,6 +29,9 @@ class UserController extends Controller
     {
         //
         $user=User::find($id);
+        if(!$user){
+            return response()->json(...$this->apiResponses->notFoundResponse());
+        }
         return response()->json(["data"=>$user]);
     }
 
@@ -76,7 +79,8 @@ class UserController extends Controller
         if(!$deletedUser){
             return response()->json(...$this->apiResponses->notFoundResponse());
         }
-
+        /**@disregard */
+        $deletedUser->delete();
         return response()->json(...$this->apiResponses->deleteResponse());
     }
 }

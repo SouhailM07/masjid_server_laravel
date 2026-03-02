@@ -93,7 +93,7 @@ class RoleController extends Controller
             "description"=>"string",
             // 
             "actions"=>['nullable','array'],
-            "actions.*.id"=>['required','exists:actions,id'],
+            "actions.*.id"=>['required','exists:actions,id','distinct'],
             "actions.*.create"=>['nullable',"boolean"],
             "actions.*.read"=>['nullable',"boolean"],
             "actions.*.update"=>['nullable',"boolean"],

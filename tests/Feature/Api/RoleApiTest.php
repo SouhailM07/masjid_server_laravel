@@ -109,6 +109,15 @@ describe("Role Api Piviot and Relationships Tests",function(){
         $updateResponse->assertOk();
         assertDatabaseCount('role_action',1);
     });
+    it("reject duplicated actions in the same role",function(){
+        assertDatabaseCount('role_action',0);
+        assertDatabaseCount("actions",0);
+        $roleId=test()->role->id;
+        $action=Action::factory()->create();
+        assertDatabaseCount("actions",1);
+        $response=putJson("/api/roles/$roleId",["actions"=>[$action,$action]]);
+        $response->assertUnprocessable()->assertJsonValidationErrors(["actions.0.id","actions.1.id"]);
+    });
     it('delete a role_action after deleting role',function(){
         $action=Action::factory()->create();
         $roleId=test()->role->id;

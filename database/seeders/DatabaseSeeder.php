@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             // ! dont forget membership seeder here
             CenterSeeder::class,
-            SocialSeeder::class,
-            ContactSeeder::class
+            // SocialSeeder::class,
+            // ContactSeeder::class
         ]);
     }
 }

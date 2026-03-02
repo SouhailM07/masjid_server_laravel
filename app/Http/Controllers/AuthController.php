@@ -30,7 +30,7 @@ class AuthController extends Controller
             "message"=>"Logged In Successfully",
             "user"=>$user,
             "token"=>$token
-        ]);
+        ],200);
 
     }
     public function register(Request $req){

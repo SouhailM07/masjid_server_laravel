@@ -1,12 +1,17 @@
 <?php
 
 use App\Helpers\Api\UserApiResponse;
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\putJson;
+use function Pest\Laravel\post;
+use function Pest\Laravel\postJson;
+use function Pest\Laravel\seed;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +49,42 @@ describe("User Api CRUD Test",function(){
     });
 });
 
+describe("User Piviot and Relationships Test",function(){
+    it("return error when creating duplicate roles in the same user", function () {
+        seed();
+        $userId=test()->user->id;
+        $response = putJson("/api/users/$userId",[ "roles" => [
+            ["id" => 1],
+            ["id" => 1],
+        ]]);
+        $response
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['roles.0.id', 'roles.1.id']);
+
+        // make sure nothing extra was inserted
+        assertDatabaseCount("user_role", 0);
+    });
+    it("delete user_role when user is deleted",function(){
+        seed();
+        assertDatabaseCount("user_role",0);
+        assertDatabaseCount('users',1);
+        $newUser=[
+            "name"=>"test user",
+            "email"=>"test@gmail.com",
+            "password"=>"12345678",
+            "password_confirmation"=>"12345678"
+            ];
+            $response = postJson(route('register'),$newUser);
+            $response->assertCreated()->assertJsonStructure(["message","token"]);
+            assertDatabaseCount('user_role',1);
+            assertDatabaseCount('users',2);
+        $newUserId=User::where("name",'test user')->first()->id;
+        $deleteResponse=deleteJson("/api/users/$newUserId");
+        $deleteResponse->assertOk()->assertJsonStructure(["message"]);
+        assertDatabaseCount('user_role',0);
+        assertDatabaseCount('users',1);
+    });
+});
 /*
 |--------------------------------------------------------------------------
 | 404 / Not Found Tests

@@ -17,10 +17,12 @@ Route::get('/hi',function(){
     return response()->json(["message"=>"welcome to the absolute shadow , $mode"],200);
 });
 
-Route::resource('/users',UserController::class);
 
-Route::post('/register',[AuthController::class,'register']);
+Route::post('/register',[AuthController::class,'register'])->name('register');
+Route::post("/login",[AuthController::class,'login'])->name("login");
+Route::post("/logout",[AuthController::class,'logout'])->name('logout');
 
+
+Route::resource('/users',UserController::class)->names("users");
 Route::resource('/actions',ActionController::class)->names('actions');
-
 Route::resource('/roles',RoleController::class)->names('roles');

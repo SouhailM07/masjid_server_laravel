@@ -50,7 +50,7 @@ class UserController extends Controller
             'name'=>"string",
             "email"=>"email",
             "roles"=>['nullable','array'],
-            "roles.*.id"=>["required","exists:roles,id"],
+            "roles.*.id"=>["required","exists:roles,id","distinct"],
         ]);
 
         /**@disregard */

@@ -7,6 +7,7 @@ use App\Models\Center;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 
 class CenterController extends Controller
 {
@@ -57,14 +58,34 @@ class CenterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
-    {
-        //
-        $center=Center::find($id);
-        if(!$center) {
-            return response()->json(...$this->apiResponses->notFoundResponse());
-        }
+
+
+public function show($id)
+{
+    $center = Center::find($id);
+    if (!$center) {
+        return response()->json(...$this->apiResponses->notFoundResponse());
     }
+
+    // Call Aladhan API
+    $prayerTimesResponse = Http::withoutVerifying()
+        ->get('https://api.aladhan.com/v1/timingsByCity', [
+            'city' => 'Algiers',
+            'country' => 'Algeria'
+        ])
+        ->json();
+
+    // Extract only 'timings'
+    $timings = $prayerTimesResponse['data']['timings'] ?? [];
+
+    // Return JSON with center + timings only
+    return response()->json([
+        'data' => [
+            'center' => $center,
+            'prayerTimes' => $timings
+        ]
+    ]);
+}
 
 
     /**

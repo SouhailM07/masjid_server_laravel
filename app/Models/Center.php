@@ -10,7 +10,11 @@ class Center extends Model
     /** @use HasFactory<\Database\Factories\CenterFactory> */
     use HasFactory;
 
-    protected $fillable = ["name","logo","city","wilaya","type"];
+    protected $fillable = ["name","logo","city","wilaya","type","latitude","longitude"];
+
+    public function prayers(){
+        return $this->hasMany(Prayer::class);
+    }
 
     public function contacts(){
         return $this->hasMany(Contact::class);

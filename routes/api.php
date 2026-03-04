@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CenterController;
+use App\Http\Controllers\PrayerController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -28,3 +29,4 @@ Route::resource('/users',UserController::class)->names("users");
 Route::resource('/actions',ActionController::class)->names('actions');
 Route::resource('/roles',RoleController::class)->names('roles');
 Route::resource("/centers",CenterController::class)->names("centers");
+Route::resource("/prayers",PrayerController::class)->names('prayers');

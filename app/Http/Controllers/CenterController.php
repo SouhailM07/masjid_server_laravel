@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Api\CenterApiResponse;
 use App\Models\Center;
+use App\Models\Prayer;
 use App\Models\Role;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
@@ -38,6 +40,8 @@ class CenterController extends Controller
             "city"=>['string',"required"],
             "wilaya"=>['string','required'],
             "type"=>['required','string',"in:masjid,mousala"],
+            "latitude"=>['required',"decimal:0",],
+            "longitude"=>['required',"decimal:0"],
             'user_id' => ["required", "exists:users,id"]
         ]);
 
@@ -59,10 +63,9 @@ class CenterController extends Controller
      * Display the specified resource.
      */
 
-
 public function show($id)
 {
-    $center = Center::find($id);
+    $center = Center::find($id); 
     if (!$center) {
         return response()->json(...$this->apiResponses->notFoundResponse());
     }
@@ -78,11 +81,20 @@ public function show($id)
     // Extract only 'timings'
     $timings = $prayerTimesResponse['data']['timings'] ?? [];
 
-    // Return JSON with center + timings only
+    // Map DB prayers to ['type' => 'time'] format
+    $dbPrayers = $center->prayers->pluck('time', 'type')->map(function($time) {
+        return Carbon::createFromFormat('H:i:s', $time)->format('H:i');
+    })->toArray();
+
+    // Merge them into one timings object
+    $mergedTimings = array_merge($timings, $dbPrayers);
+    /**@disregard */
+    $center["users"]=$center->users()->count();
+    $center['prayerTimes']=$mergedTimings;
+    /**@disregard */
     return response()->json([
         'data' => [
-            'center' => $center,
-            'prayerTimes' => $timings
+             $center->except(["prayers","updated_at","created_at"])
         ]
     ]);
 }

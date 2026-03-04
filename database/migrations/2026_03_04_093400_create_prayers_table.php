@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('centers', function (Blueprint $table) {
+        Schema::create('prayers', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string("logo")->default("");
-            $table->string("city");
-            $table->string("wilaya");
-            $table->decimal('latitude');
-            $table->decimal("longitude");
-            $table->enum("type",["masjid","mousala"]);
+            $table->time("time");
+            $table->foreignId("center_id")->constrained()->cascadeOnDelete();
+            $table->enum("type",["Istis9a","Aid","Janaza"]);
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('centers');
+        Schema::dropIfExists('prayers');
     }
 };

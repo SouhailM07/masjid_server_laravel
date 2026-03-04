@@ -17,13 +17,10 @@ class CenterFactory extends Factory
     public function definition(): array
     {
 return [
-            'name' => $this->faker->unique()->company . " Masjid",
+            'name' => $this->faker->unique()->company ,
             'logo' => '',
             'city' => $this->faker->city,
             'wilaya' => $this->faker->state,
-            'primaryColor' => $this->faker->hexColor,
-            'secondaryColor' => $this->faker->hexColor,
-            'accentColor' => $this->faker->hexColor,
             'type' => $this->faker->randomElement(['masjid', 'mousala']),
         ];
     }

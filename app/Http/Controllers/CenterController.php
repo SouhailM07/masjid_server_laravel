@@ -2,25 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Api\CenterApiResponse;
 use App\Models\Center;
+use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class CenterController extends Controller
 {
+    protected $apiResponses;
+    public function __construct()
+    {
+        $this->apiResponses=new CenterApiResponse();
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $centers=Center::with("users")->get();
+        return response()->json(["data"=>$centers]);
     }
 
     /**
@@ -29,23 +31,41 @@ class CenterController extends Controller
     public function store(Request $request)
     {
         //
+        $data=$request->validate([
+            "name"=>["string","required"],
+            "logo"=>['nullable'],
+            "city"=>['string',"required"],
+            "wilaya"=>['string','required'],
+            "type"=>['required','string',"in:masjid,mousala"],
+            'user_id' => ["required", "exists:users,id"]
+        ]);
+
+        $newCenter=Center::create(Arr::except($data,['user_id']));
+        $userRoleId=Role::where("name","user")->first()->id;
+        $newCenter->users()->attach($data['user_id'],[
+            'role_id'=>$userRoleId,
+            "center_id"=>$newCenter->id
+        ]);
+
+        $debugData=[];
+        if(config("app.debug")){
+            $debugData=['data'=>$newCenter];
+        }
+        return response()->json(...$this->apiResponses->createResponse($debugData));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Center $center)
+    public function show($id)
     {
         //
+        $center=Center::find($id);
+        if(!$center) {
+            return response()->json(...$this->apiResponses->notFoundResponse());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Center $center)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -61,5 +81,8 @@ class CenterController extends Controller
     public function destroy(Center $center)
     {
         //
+        $center->delete();
+        return response()->json(...$this->apiResponses->deleteResponse());
+
     }
 }

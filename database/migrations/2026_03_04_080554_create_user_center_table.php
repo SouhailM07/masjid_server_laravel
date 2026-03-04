@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('centers', function (Blueprint $table) {
+        Schema::create('user_center', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string("logo")->default("");
-            $table->string("city");
-            $table->string("wilaya");
-            $table->enum("type",["masjid","mousala"]);
+            $table->foreignId("user_id")->constrained()->cascadeOnDelete();
+            $table->foreignId("role_id")->constrained()->cascadeOnDelete();
+            $table->foreignId("center_id")->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->unique(["user_id","role_id","center_id"]);
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('centers');
+        Schema::dropIfExists('user_center');
     }
 };

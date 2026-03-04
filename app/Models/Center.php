@@ -10,7 +10,7 @@ class Center extends Model
     /** @use HasFactory<\Database\Factories\CenterFactory> */
     use HasFactory;
 
-    protected $fillable = ["name","logo","city","wilaya","primaryColor","secondaryColor","accentColor","type"];
+    protected $fillable = ["name","logo","city","wilaya","type"];
 
     public function contacts(){
         return $this->hasMany(Contact::class);
@@ -21,18 +21,17 @@ class Center extends Model
     }
 
     public function users(){
-        return $this->belongsToMany(User::class,"memberships")
-                    ->withPivot("membership_role_id")
-                    ->as('membership')
-                    ->using(Membership::class);
+        return $this->belongsToMany(User::class,"user_center")
+                    ->withPivot('role_id',"center_id")
+                    ->withTimestamps();
     }
 
-    public function owner(){
-        $ownerRoleId = MembershipRole::where("name",'owner')->value('id');
-        return $this->belongsToMany(User::class,'memberships')
-                    ->withPivot('membership_role_id',$ownerRoleId)
-                    ->as("membership")
-                    ->using(Membership::class);
-    }
+    // public function owner(){
+    //     $ownerRoleId = MembershipRole::where("name",'owner')->value('id');
+    //     return $this->belongsToMany(User::class,'memberships')
+    //                 ->withPivot('membership_role_id',$ownerRoleId)
+    //                 ->as("membership")
+    //                 ->using(Membership::class);
+    // }
 
 }

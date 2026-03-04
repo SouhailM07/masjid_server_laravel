@@ -22,8 +22,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id',
-        'isAccountVerified',
         "isOauth",
         "oauthType",
     ];
@@ -33,10 +31,9 @@ class User extends Authenticatable
     }
 
     public function centers(){
-        return $this->belongsToMany(Center::class,"memberships")
-                    ->withPivot('membership_role_id')
-                    ->as("membership")
-                    ->using(Membership::class);
+        return $this->belongsToMany(Center::class,"user_center")
+                    ->withPivot('role_id','center_id')
+                    ->withTimestamps();
     }
     /**
      * The attributes that should be hidden for serialization.

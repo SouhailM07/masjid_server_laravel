@@ -2,15 +2,8 @@
 
 namespace App\Helpers\Api;
 
-interface ApiResponseInterface {
-    public function notFoundResponse($msg=null):array;
-    public function createResponse(array $data=[]):array;
-    public function deleteResponse(array $data=[]):array;
-    public function updateResponse(array $data=[]):array;
-    public function idRequiredResponse($msg=null):array;
-};
-
-class ApiResponse implements ApiResponseInterface{
+//  implements ApiResponseInterface
+class ApiResponse{
     protected string $name;
 
     public function __construct(string $name = "Item") {

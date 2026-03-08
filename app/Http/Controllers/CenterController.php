@@ -24,7 +24,7 @@ class CenterController extends Controller
     public function index()
     {
         //
-        $centers=Center::with("users")->get();
+        $centers=Center::withCount("users")->get()->makeHidden(["created_at","updated_at"]);
         return response()->json(["data"=>$centers]);
     }
 
@@ -93,9 +93,8 @@ public function show($id)
     $center['prayerTimes']=$mergedTimings;
     /**@disregard */
     return response()->json([
-        'data' => [
+        'data' => 
              $center->except(["prayers","updated_at","created_at"])
-        ]
     ]);
 }
 

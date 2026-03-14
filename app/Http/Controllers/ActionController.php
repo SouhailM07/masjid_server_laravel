@@ -26,7 +26,7 @@ class ActionController extends Controller
         $data=$request->validate([
             'name'=>'required|string|unique:actions',
             "isPublic"=>['required','boolean'],
-            'description'=>"string"
+            'description'=>['nullable',"string"]
         ]);
 
         $newAction = Action::create($data);

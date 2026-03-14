@@ -59,7 +59,7 @@ class ActionSeeder extends Seeder
 ];
 
         foreach($actions as $action){
-            Action::updateOrCreate($action);
+            Action::factory()->create([...$action,'isPublic'=>true]);
         }
     }
 }

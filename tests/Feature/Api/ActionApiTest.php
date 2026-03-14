@@ -11,6 +11,7 @@ use function Pest\Laravel\putJson;
 beforeEach(function () {
     test()->action = Action::factory()->create([
         'name' => 'Test Action',
+        'isPublic'=>true,
         'description' => 'This is a test action'
     ]);
 });
@@ -24,6 +25,7 @@ describe('Action API CRUD Testing', function () {
     it('creates a new action', function () {
         $response = postJson('/api/actions', [
             'name' => 'Another Test Action',
+            'isPublic'=>true,
             'description' => 'Another This is a test action'
         ]);
 
@@ -32,6 +34,7 @@ describe('Action API CRUD Testing', function () {
                 'message',
                 'data' => [
                     'id',
+                    'isPublic',
                     'name',
                     'description',
                     'created_at',
@@ -46,7 +49,7 @@ describe('Action API CRUD Testing', function () {
         $response->assertOk()
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'name', 'description', 'created_at', 'updated_at']
+                    '*' => ['id', 'name','isPublic', 'description', 'created_at', 'updated_at']
                 ]
             ]);
     });
@@ -58,20 +61,21 @@ describe('Action API CRUD Testing', function () {
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['id', 'name', 'description', 'created_at', 'updated_at']
+                'data' => ['id', 'isPublic','name', 'description', 'created_at', 'updated_at']
             ]);
     });
 
     it('updates an existing action', function () {
         $response = putJson('/api/actions/' . test()->action->id, [
             'name' => 'Updated Test Name',
+            'isPublic'=>false,
             'description' => 'Updated description'
         ]);
 
         $response->assertOk()
             ->assertJsonStructure([
                 'message',
-                'data' => ['id', 'name', 'description', 'created_at', 'updated_at']
+                'data' => ['id','isPublic', 'name', 'description', 'created_at', 'updated_at']
             ]);
 
             expect(test()->action->fresh())

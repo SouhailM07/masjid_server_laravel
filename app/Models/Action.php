@@ -10,7 +10,7 @@ class Action extends Model
     /** @use HasFactory<\Database\Factories\ActionFactory> */
     use HasFactory;
 
-    protected $fillable = ['name','description'];
+    protected $fillable = ['name','isPublic','description'];
 
     public function roles(){
         return $this->belongsToMany(Role::class,'role_action');

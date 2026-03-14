@@ -25,6 +25,7 @@ class ActionController extends Controller
     public function store(Request $request){
         $data=$request->validate([
             'name'=>'required|string|unique:actions',
+            "isPublic"=>['required','boolean'],
             'description'=>"string"
         ]);
 
@@ -36,6 +37,7 @@ class ActionController extends Controller
     public function update(Request $request, $id){
         $data=$request->validate([
             'name' => 'string|unique:actions,name,' . $id,
+            'isPublic'=>['boolean'],
             'description'=>"string"
         ]);
 
@@ -43,6 +45,7 @@ class ActionController extends Controller
         if(!$action){
             return response()->json(["message"=>"Action not found"],404);
         }
+        /**@disregard */
         $action->update($data);
         
         return response()->json(["message"=>"Action updated successfully",'data'=>$action],200);
@@ -55,6 +58,7 @@ class ActionController extends Controller
         if(!$action){
             return response()->json(["message"=>"Action not found"],404);
         }
+        /**@disregard */
         $action->delete();
         return response()->json(["message"=>"Action deleted successfully"],200);
     }

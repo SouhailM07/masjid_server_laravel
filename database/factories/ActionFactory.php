@@ -19,6 +19,7 @@ class ActionFactory extends Factory
         return [
             //
             "name"=>fake()->name(),
+            'isPublic'=>fake()->boolean(),
         ];
     }
 }

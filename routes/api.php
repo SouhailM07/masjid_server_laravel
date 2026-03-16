@@ -28,5 +28,7 @@ Route::post("/logout",[AuthController::class,'logout'])->name('logout');
 Route::resource('/users',UserController::class)->names("users");
 Route::resource('/actions',ActionController::class)->names('actions');
 Route::resource('/roles',RoleController::class)->names('roles');
-Route::resource("/centers",CenterController::class)->names("centers");
 Route::resource("/prayers",PrayerController::class)->names('prayers');
+Route::resource("/centers",CenterController::class)->names("centers");
+Route::put("/centers/updateUserCenterRole",[CenterController::class,'assignUserCenterRole']);
+Route::post('/centers/{center}/join',[CenterController::class,'joinUserCenter']);

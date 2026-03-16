@@ -9,6 +9,8 @@ use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class CenterController extends Controller
@@ -42,15 +44,15 @@ class CenterController extends Controller
             "type"=>['required','string',"in:masjid,mousala"],
             "latitude"=>['required',"decimal:0",],
             "longitude"=>['required',"decimal:0"],
-            'user_id' => ["required", "exists:users,id"]
+            // 'user_id' => ["required", "exists:users,id"]
         ]);
 
-        $newCenter=Center::create(Arr::except($data,['user_id']));
-        $userRoleId=Role::where("name","user")->first()->id;
-        $newCenter->users()->attach($data['user_id'],[
-            'role_id'=>$userRoleId,
-            "center_id"=>$newCenter->id
-        ]);
+        $newCenter=Center::create($data);
+        // $userRoleId=Role::where("name","user")->first()->id;
+        // $newCenter->users()->attach($data['user_id'],[
+        //     'role_id'=>$userRoleId,
+        //     "center_id"=>$newCenter->id
+        // ]);
 
         $debugData=[];
         if(config("app.debug")){
@@ -116,5 +118,81 @@ public function show($id)
         $center->delete();
         return response()->json(...$this->apiResponses->deleteResponse());
 
+    }
+    /*=============================================================================================*/
+    /* custom handlers */
+    /*=============================================================================================*/
+    public function joinUserCenter($center){
+        if(config('app.debug')){
+            Auth::loginUsingId(1);
+        };
+        $userId=Auth::id();
+
+        $membershipExists=DB::table('user_center')->where([
+            'user_id'=>$userId,
+            'center_id'=>$center
+        ])->exists();
+        if($membershipExists){
+            return response()->json(['message'=>"User already joined this center"],409);
+        }
+        // ! dont forget to change it later for user center role
+        $membership_role_id=Role::where("name",'user')->first()->id;
+        DB::table('user_center')->insert([
+            'user_id'=>$userId,
+            'center_id'=>$center,
+            'role_id'=>$membership_role_id
+        ]);
+        return response()->json(['message'=>"Successfully joined the center"],201);
+    }
+    // 
+    public function assignUserCenterRole(Request $request){
+        /*=============================================================================================*/
+        /* 
+            if user role was true and exist then do nothing
+            if user role was true and dont exist add that role to that user in that center
+            if user role was false and exist then delete it
+            if user role was false and dont exist then do nothing
+        */
+        /*=============================================================================================*/
+        $data=$request->validate([
+            'user_id'=>['required','exists:users,id'],
+            'center_id'=>['required','exists:centers,id'],
+            "roles"=>['nullable','array'],
+            'roles.*.id'=>['required','exists:roles,id','distinct'],
+            "roles.*.value"=>['required','boolean']
+            ]);
+        if($data['roles']){
+            foreach($data['roles'] as $role){
+                    $recordExists=DB::table('user_center')->where([
+                        'user_id'=>$data['user_id'],
+                        'center_id'=>$data['center_id'],
+                        'role_id'=>$role['id']
+                    ])->first();
+                if($role['value']){
+                    if(!$recordExists){
+                        DB::table('user_center')->insert([
+                            'user_id'=>$data['user_id'],
+                            'center_id'=>$data['center_id'],
+                            'role_id'=>$role['id']
+                        ]);
+                    }
+                }else{
+                    if($recordExists){
+                        DB::table("user_center")->where([
+                            'user_id'=>$data['user_id'],
+                            'center_id'=>$data['center_id'],
+                            'role_id'=>$role['id']
+                        ]);
+                    }
+                }
+                }
+        }
+        /**@disregard */
+        /*
+        ! there is a problem here , if user is member , then how to toggle things up
+        ! like user can have multiple roles , how can toggle admin role if exist
+        ! user_id and center_id dont change , only role_id is changing ,note for js map
+        */
+    return response()->json(["message"=>"User Center Role was assigned successfully"]);
     }
 }

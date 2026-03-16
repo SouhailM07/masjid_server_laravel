@@ -29,6 +29,5 @@ class RoleSeeder extends Seeder
             "description"=>"Default user role when creating an account for the first time",
         ];
         Role::updateOrCreate($userRoleData)->actions()->sync($userRoleActions);
-        
     }
 }

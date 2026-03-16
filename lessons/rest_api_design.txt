@@ -1,0 +1,16 @@
+1- dont use actions to name url
+2- cont use createUser , because the HTTP methdod already tells us what actions i being performed
+3- handles error wisley 
+4- always validate request data
+5- api versioning , api/v1 , v2 ..
+it let you introduce new versions without breaking the existing api
+[uri versioning / header versining]
+6- when you deals with tons of data sending all at once can be a nightmare ,
+that's where [pagination , filtering , and sorting ] come in hand
+7- fine tuning your api , make rules that can devs understand it to communicate
+8- richardson maturity model
+9- secure api through auth and authorazistion
+10- perfomance through caching [client,cdn,server]
+11- rate limit to prevent api crashing , token bucket algo
+12- documentations , openapi
+

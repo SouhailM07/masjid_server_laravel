@@ -1,0 +1,23 @@
+potential routes
+1- center - > prayers / posts / donations / radio / library
+
+api/v1/centers/{center}/prayers [get]
+	centers/{center}/donations [get , post]
+	centers/{center}/posts [get]
+	centers/{center}/library [get]
+
+
+joining action => [ library]
+
+
+2- think of three ways
+[1] - user
+[2] - admin
+[3] - owner
+
+============================
+[Center admin]
+api/v1/centers/{center}/prayers [post]
+	centers/{center}/donation [post ,put,delete,get]
+	centers/{center}/posts [crud]
+	centers/{center}/library [crud]

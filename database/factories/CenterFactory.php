@@ -24,7 +24,6 @@ return [
             'wilaya' => $this->faker->state,
             'longitude'=>fake()->randomDigit(),
             'latitude'=>fake()->randomDigit(),
-            'user_id'=>User::inRandomOrder()->value('id'),
             'type' => $this->faker->randomElement(['masjid', 'mousala']),
         ];
     }

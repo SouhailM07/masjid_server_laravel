@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\ForceJsonResponse;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         //
         $middleware->api(append:[ForceJsonResponse::class]);
+        $middleware->alias([
+            'permission'=>CheckPermission::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

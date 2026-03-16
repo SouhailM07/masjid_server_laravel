@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\V1\ActionController;
 use App\Http\Controllers\Api\V1\CenterController;
 use App\Http\Controllers\Api\V1\PrayerController;
@@ -26,11 +26,12 @@ Route::post("/logout",[AuthController::class,'logout'])->name('logout');
 
 
 Route::prefix('v1')->group(function(){
-    Route::apiResource('/users',UserController::class)->names("users");
-    Route::apiResource('/actions',ActionController::class)->names('actions');
-    Route::apiResource('/roles',RoleController::class)->names('roles');
-    Route::apiResource("/prayers",PrayerController::class)->names('prayers');
-    Route::apiResource("/centers",CenterController::class)->names("centers");
+    Route::apiResource('/users',UserController::class);
+    Route::apiResource('/actions',ActionController::class);
+    Route::apiResource('/roles',RoleController::class);
+    Route::apiResource("/prayers",PrayerController::class);
+    Route::apiResource("/centers",CenterController::class)->except(['store']);
+    Route::post('/centers',CenterController::class.'@store')->middleware(['auth:sanctum','permission:centers,create']);
     // ! use admins in middleware not urls
     Route::put("/centers/{center}/users/{user}/role",[CenterController::class,'assignUserCenterRole']);
     Route::put("/centers/updateUserCenterRole",[CenterController::class,'assignUserCenterRole']);

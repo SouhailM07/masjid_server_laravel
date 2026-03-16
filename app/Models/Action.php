@@ -13,7 +13,8 @@ class Action extends Model
     protected $fillable = ['name','isPublic','description'];
 
     public function roles(){
-        return $this->belongsToMany(Role::class,'role_action');
+        return $this->belongsToMany(Role::class,'role_action')
+                ->withPivot(['create','read','update','delete']);
     }
 
     

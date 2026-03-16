@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             CenterSeeder::class,
             // SocialSeeder::class,
             // ContactSeeder::class
+            InitSetupSeeder::class,
         ]);
     }
 }

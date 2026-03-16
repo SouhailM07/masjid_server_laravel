@@ -1,0 +1,17 @@
+owner
+=================
+- owner must first create actions to create roles [x]
+- then creates a centers    [x]
+- then assign owners to those centers []
+===============
+center admin
+===============
+- must manage center content and users like a biru
+[posts,prayers,donations,radio,library]
+=============
+user
+=============
+- must create an account 
+- find a centers that close to him to join
+- if not found , he can tell his centers to go to help -> add center , contact support
+

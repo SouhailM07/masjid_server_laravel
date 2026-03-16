@@ -30,6 +30,13 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class,"user_role");
     }
 
+    public function canDo($resource,$action){
+        return $this->roles()
+            ->whereHas('actions',function($q) use ($resource,$action){
+                $q->where('name',$resource)
+                    ->where("role_action.$action",true);
+            })->exists();
+    }
     public function centers(){
         return $this->belongsToMany(Center::class,"user_center")
                     ->withPivot('role_id','center_id')

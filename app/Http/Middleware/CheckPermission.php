@@ -14,9 +14,9 @@ class CheckPermission
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next,$resource,$action): Response
+    public function handle(Request $request, Closure $next,$action,$permission): Response
     {
-        if(!Auth::user()?->canDo($resource,$action)){
+        if(!Auth::user()?->canDo($action,$permission)){
             abort(403,'You do not have permission For This');
         }
         return $next($request);

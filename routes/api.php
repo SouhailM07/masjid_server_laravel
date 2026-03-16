@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\ActionController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CenterController;
-use App\Http\Controllers\PrayerController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\V1\ActionController;
+use App\Http\Controllers\Api\V1\CenterController;
+use App\Http\Controllers\Api\V1\PrayerController;
+use App\Http\Controllers\Api\V1\RoleController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,10 +25,15 @@ Route::post("/login",[AuthController::class,'login'])->name("login");
 Route::post("/logout",[AuthController::class,'logout'])->name('logout');
 
 
-Route::resource('/users',UserController::class)->names("users");
-Route::resource('/actions',ActionController::class)->names('actions');
-Route::resource('/roles',RoleController::class)->names('roles');
-Route::resource("/prayers",PrayerController::class)->names('prayers');
-Route::resource("/centers",CenterController::class)->names("centers");
-Route::put("/centers/updateUserCenterRole",[CenterController::class,'assignUserCenterRole']);
-Route::post('/centers/{center}/join',[CenterController::class,'joinUserCenter']);
+Route::prefix('v1')->group(function(){
+    Route::apiResource('/users',UserController::class)->names("users");
+    Route::apiResource('/actions',ActionController::class)->names('actions');
+    Route::apiResource('/roles',RoleController::class)->names('roles');
+    Route::apiResource("/prayers",PrayerController::class)->names('prayers');
+    Route::apiResource("/centers",CenterController::class)->names("centers");
+    // ! use admins in middleware not urls
+    Route::put("/centers/{center}/users/{user}/role",[CenterController::class,'assignUserCenterRole']);
+    Route::put("/centers/updateUserCenterRole",[CenterController::class,'assignUserCenterRole']);
+    
+    Route::post('/centers/{center}/join',[CenterController::class,'joinUserCenter']);
+});

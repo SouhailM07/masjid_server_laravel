@@ -26,24 +26,24 @@ beforeEach(function(){
 
 describe("User Api CRUD Test",function(){
     it("get all users",function(){
-        $response = getJson('/api/users');
+        $response = getJson('/api/v1/users');
         $response->assertOk()->assertJsonStructure(['data']);
     });
     it("get a specific user",function(){
         $userId=test()->user->id;
-        $response = getJson("/api/users/$userId");
+        $response = getJson("/api/v1/users/$userId");
         $response->assertOk()->assertJsonStructure(["data"]);
     });
     it("update a specific user",function(){
         $userId=test()->user->id;
         $newData=["name"=>"shadow test"];
-        $response=putJson("/api/users/$userId",$newData);
+        $response=putJson("/api/v1/users/$userId",$newData);
         $response->assertOk()->assertJsonStructure(["message"]);
     });
     it('delete a specific user',function(){
         assertDatabaseCount('users',1);
         $userId=test()->user->id;
-        $response = deleteJson("/api/users/$userId");
+        $response = deleteJson("/api/v1/users/$userId");
         $response->assertOk()->assertJsonStructure(["message"]);
         assertDatabaseCount('users',0);
     });
@@ -53,7 +53,7 @@ describe("User Piviot and Relationships Test",function(){
     it("return error when creating duplicate roles in the same user", function () {
         seed();
         $userId=test()->user->id;
-        $response = putJson("/api/users/$userId",[ "roles" => [
+        $response = putJson("/api/v1/users/$userId",[ "roles" => [
             ["id" => 1],
             ["id" => 1],
         ]]);
@@ -79,7 +79,7 @@ describe("User Piviot and Relationships Test",function(){
             assertDatabaseCount('user_role',1);
             assertDatabaseCount('users',2);
         $newUserId=User::where("name",'test user')->first()->id;
-        $deleteResponse=deleteJson("/api/users/$newUserId");
+        $deleteResponse=deleteJson("/api/v1/users/$newUserId");
         $deleteResponse->assertOk()->assertJsonStructure(["message"]);
         assertDatabaseCount('user_role',0);
         assertDatabaseCount('users',1);
@@ -92,15 +92,15 @@ describe("User Piviot and Relationships Test",function(){
 */
 describe("User Api 404 Error Test",function(){
     it("return 404 when user not found (GET)",function(){
-        $response =getJson("/api/users/9999");
+        $response =getJson("/api/v1/users/9999");
         $response->assertNotFound()->assertJson(test()->apiResponses->notFoundResponse()[0]);
     });
     it("return 404 when user not found (PUT)",function(){
-        $response=putJson("/api/users/9999",["name"=>"new test name"]);
+        $response=putJson("/api/v1/users/9999",["name"=>"new test name"]);
         $response->assertNotFound()->assertJson(test()->apiResponses->notFoundResponse()[0]);
     });
     it("return 404 when user not found (DELETE)",function(){
-        $response =deleteJson("/api/users/9999");
+        $response =deleteJson("/api/v1/users/9999");
         $response->assertNotFound()->assertJson(test()->apiResponses->notFoundResponse()[0]);
     });
 });

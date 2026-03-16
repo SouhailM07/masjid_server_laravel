@@ -23,7 +23,7 @@ beforeEach(function () {
 */
 describe('Action API CRUD Testing', function () {
     it('creates a new action', function () {
-        $response = postJson('/api/actions', [
+        $response = postJson('/api/v1/actions', [
             'name' => 'Another Test Action',
             'isPublic'=>true,
             'description' => 'Another This is a test action'
@@ -44,7 +44,7 @@ describe('Action API CRUD Testing', function () {
     });
 
     it('gets all actions', function () {
-        $response = getJson('/api/actions');
+        $response = getJson('/api/v1/actions');
 
         $response->assertOk()
             ->assertJsonStructure([
@@ -55,7 +55,7 @@ describe('Action API CRUD Testing', function () {
     });
 
     it('finds a specific action', function () {
-        $response = getJson('/api/actions/' . test()->action->id);
+        $response = getJson('/api/v1/actions/' . test()->action->id);
 
         assertDatabaseCount('actions', 1);
 
@@ -66,7 +66,7 @@ describe('Action API CRUD Testing', function () {
     });
 
     it('updates an existing action', function () {
-        $response = putJson('/api/actions/' . test()->action->id, [
+        $response = putJson('/api/v1/actions/' . test()->action->id, [
             'name' => 'Updated Test Name',
             'isPublic'=>false,
             'description' => 'Updated description'
@@ -86,7 +86,7 @@ describe('Action API CRUD Testing', function () {
     it('deletes an existing action', function () {
         $actionId = test()->action->id;
     
-        $response = deleteJson('/api/actions/' . $actionId);
+        $response = deleteJson('/api/v1/actions/' . $actionId);
         $response->assertOk()->assertJsonStructure(['message']);
 
         expect(Action::find($actionId))->toBeNull();
@@ -100,7 +100,7 @@ describe('Action API CRUD Testing', function () {
 */
 describe('Action API Validation Testing', function () {
     it('rejects empty name when creating an action',function(){
-        $response = postJson('/api/actions',[
+        $response = postJson('/api/v1/actions',[
             'name'=>"",
         ]);
 
@@ -109,7 +109,7 @@ describe('Action API Validation Testing', function () {
     });
 
     it('requires name when creating an action', function () {
-        $response = postJson('/api/actions', [
+        $response = postJson('/api/v1/actions', [
             'description' => 'Missing name'
         ]);
 
@@ -118,7 +118,7 @@ describe('Action API Validation Testing', function () {
     });
 
     it('validates unique name when creating an action', function () {
-        $response = postJson('/api/actions', [
+        $response = postJson('/api/v1/actions', [
             'name' => 'Test Action',
             'description' => 'Duplicate name'
         ]);
@@ -132,7 +132,7 @@ describe('Action API Validation Testing', function () {
             'description' => 'Testing unique name validation on update'
         ]);
 
-        $response = putJson('/api/actions/' . test()->action->id, [
+        $response = putJson('/api/v1/actions/' . test()->action->id, [
             'name' => 'Unique Name Test',
             'description' => 'Trying to update with duplicate name'
         ]);
@@ -149,12 +149,12 @@ describe('Action API Validation Testing', function () {
 */
 describe('Action API 404 Error Testing', function () {
     it('returns 404 when action not found (GET)', function () {
-        $response = getJson('/api/actions/999');
+        $response = getJson('/api/v1/actions/999');
         $response->assertNotFound()->assertJson(['message' => 'Action not found']);
     });
 
     it('returns 404 when action not found (PUT)', function () {
-        $response = putJson('/api/actions/999', [
+        $response = putJson('/api/v1/actions/999', [
             'name' => 'Update Test',
             'description' => 'Trying to update nonexistent action'
         ]);
@@ -163,7 +163,7 @@ describe('Action API 404 Error Testing', function () {
     });
 
     it('returns 404 when action not found (DELETE)', function () {
-        $response = deleteJson('/api/actions/999');
+        $response = deleteJson('/api/v1/actions/999');
         $response->assertNotFound()->assertJson(['message' => 'Action not found']);
     });
 });

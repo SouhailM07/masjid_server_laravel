@@ -32,9 +32,9 @@ Route::prefix('v1')->group(function(){
     Route::apiResource("/prayers",PrayerController::class);
     Route::apiResource("/centers",CenterController::class)->except(['store']);
     Route::post('/centers',CenterController::class.'@store')->middleware(['auth:sanctum','permission:centers,create']);
+    Route::get('/centers/{center}/prayers',[PrayerController::class,'indexByCenter']);
     // ! use admins in middleware not urls
     Route::put("/centers/{center}/users/{user}/role",[CenterController::class,'assignUserCenterRole']);
-    Route::put("/centers/updateUserCenterRole",[CenterController::class,'assignUserCenterRole']);
-    
+    // Route::put("/centers/updateUserCenterRole",[CenterController::class,'assignUserCenterRole']);
     Route::post('/centers/{center}/join',[CenterController::class,'joinUserCenter']);
 });

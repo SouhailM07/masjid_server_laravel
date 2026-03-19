@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Helpers\Api\PrayerApiResponse;
+use App\Models\Center;
 use App\Models\Prayer;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class PrayerController extends Controller
 {
@@ -22,10 +25,34 @@ class PrayerController extends Controller
         return response()->json(["data"=>$prayers]);
     }
 
+    public function indexByCenter(Center $center){
+            // Call Aladhan API
+    $prayerTimesResponse = Http::withoutVerifying()
+        ->get('https://api.aladhan.com/v1/timingsByCity', [
+            'city' => 'Algiers',
+            'country' => 'Algeria'
+        ])
+        ->json();
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Extract only 'timings'
+    $timings = $prayerTimesResponse['data']['timings'] ?? [];
+
+    // Map DB prayers to ['type' => 'time'] format
+    $dbPrayers = $center->prayers->pluck('time', 'type')->map(function($time) {
+        return Carbon::createFromFormat('H:i:s', $time)->format('H:i');
+    })->toArray();
+
+    // Merge them into one timings object
+    $mergedTimings = array_merge($timings, $dbPrayers);
+    /**@disregard */
+    $center['prayerTimes']=$mergedTimings;
+    /**@disregard */
+    return response()->json([
+        'data' => 
+             $center->except(["prayers","updated_at","created_at"])
+    ]);
+    }
+
     public function store(Request $request)
     {
         //

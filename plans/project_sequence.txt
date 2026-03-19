@@ -3,6 +3,7 @@ owner
 - owner must first create actions to create roles [x]
 - then creates a centers    [x]
 - then assign owners to those centers []
+- must on work on data that always must exist , like repeated to put them in seeders
 ===============
 center admin
 ===============

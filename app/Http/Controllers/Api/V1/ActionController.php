@@ -51,15 +51,7 @@ class ActionController extends Controller
         
         return response()->json(["message"=>"Action updated successfully",'data'=>$action],200);
     }
-    public function destroy($id){
-        if(!$id){
-            return response()->json(["message"=>"Action id is required"],400);
-        }
-        $action = Action::find($id);
-        if(!$action){
-            return response()->json(["message"=>"Action not found"],404);
-        }
-        /**@disregard */
+    public function destroy(Action $action){
         $action->delete();
         return response()->json(["message"=>"Action deleted successfully"],200);
     }

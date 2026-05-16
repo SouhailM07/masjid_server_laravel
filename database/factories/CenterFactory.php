@@ -17,14 +17,16 @@ class CenterFactory extends Factory
      */
     public function definition(): array
     {
+        $type = $this->faker->randomElement(['masjid', 'mousala']);
+
 return [
             'name' => $this->faker->unique()->company ,
-            'logo' => '',
+            'type' => $type,
+            'logo' => $type === 'masjid' ? 'defaults/mosque-logo.png' : 'defaults/mousala-logo.png',
             'city' => $this->faker->city,
             'wilaya' => $this->faker->state,
             'longitude'=>fake()->randomDigit(),
             'latitude'=>fake()->randomDigit(),
-            'type' => $this->faker->randomElement(['masjid', 'mousala']),
         ];
     }
 }

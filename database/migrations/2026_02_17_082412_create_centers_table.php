@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('centers', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string("logo")->default("");
+            $table->string("logo");
             $table->string("city");
             $table->string("wilaya");
             $table->decimal('latitude');

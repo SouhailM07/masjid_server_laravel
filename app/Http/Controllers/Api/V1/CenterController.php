@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class CenterController extends Controller
 {
@@ -37,21 +38,23 @@ class CenterController extends Controller
         //
         $data=$request->validate([
             "name"=>["string","required"],
-            "logo"=>['nullable'],
+            "logo"=>['nullable','image','mimes:jpg,jpeg,png','max:2028'],
             "city"=>['string',"required"],
             "wilaya"=>['string','required'],
             "type"=>['required','string',"in:masjid,mousala"],
             "latitude"=>['required',"decimal:0",],
             "longitude"=>['required',"decimal:0"],
-            // 'user_id' => ["required", "exists:users,id"]
         ]);
 
+        if(empty($data['logo'])){
+            $data['logo']=$data['type']=="masjid" ? "defaults/mosque-logo.png":"defaults/mousala-logo.png";
+        }
+        else{
+            $path= $request->file('logo')->store('centers/logos','public');
+            $data['logo']=$path;
+        }
+
         $newCenter=Center::create($data);
-        // $userRoleId=Role::where("name","user")->first()->id;
-        // $newCenter->users()->attach($data['user_id'],[
-        //     'role_id'=>$userRoleId,
-        //     "center_id"=>$newCenter->id
-        // ]);
 
         $debugData=[];
         if(config("app.debug")){
@@ -95,6 +98,7 @@ public function show($id)
     /**@disregard */
     return response()->json([
         'data' => 
+    /**@disregard */
              $center->except(["prayers","updated_at","created_at"])
     ]);
 }
@@ -105,7 +109,24 @@ public function show($id)
      */
     public function update(Request $request, Center $center)
     {
-        //
+        $data=$request->validate([
+            "name"=>["string"],
+            "logo"=>['nullable','image','mimes:jpg,jpeg,png','max:2028'],
+            "city"=>['string'],
+            "wilaya"=>['string','required'],
+            "type"=>['string',"in:masjid,mousala"],
+            "latitude"=>["decimal:0",],
+            "longitude"=>["decimal:0"],
+        ]);
+        if(!empty($data['logo'])){
+            if($center->logo && Storage::disk('public')->exists($center->logo)){
+                Storage::disk('public')->delete($center->logo);
+            }
+            $path=$request->file('logo')->store('centers/logos','public');
+            $data['logo']=$path;
+        }
+        $center->update($data);
+        return response()->json(...$this->apiResponses->updateResponse());
     }
 
     /**
